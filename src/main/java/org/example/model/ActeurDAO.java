@@ -1,5 +1,7 @@
 package org.example.model;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +13,17 @@ public class ActeurDAO {
 
     public void Dbconnect() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            // connection to mysql
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mcdcinema", "root", "");
+//            Class.forName("com.mysql.cj.jdbc.Driver");
+//            // connection to mysql
+//            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mcdcinema", "root", "");
+            MysqlDataSource ds = new MysqlDataSource();
+            // ds.setUrl("jdbc:mysql://localhost:3306/mcdcinema");
+                ds.setServerName("localhost");
+                ds.setPort(3306);
+                ds.setDatabaseName("mcdcinema");
+                ds.setUser("root");
+                ds.setPassword("");
+            con =ds.getConnection();
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -34,24 +44,37 @@ public class ActeurDAO {
                 act.setPhoto(rs.getString("photo"));
                 acteurs.add(act);
             }
-        } catch (Exception e) {System.out.println(e);}
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         return acteurs;
     }
 
 
 
-    public static Acteur ajoutActeur(String nom, String prenom, String photo) {
+    public static Acteur ajoutActeur(String nom, String prenom, String photo){
         try {
             String sqlInsert = "INSERT INTO acteur (nom,prenom,photo) VALUES (?,?,?)";
+            con.setAutoCommit(false);
             preparedStatement = con.prepareStatement(sqlInsert);
             preparedStatement.setString(1,nom);
             preparedStatement.setString(2,prenom);
             preparedStatement.setString(3,photo);
             preparedStatement.executeUpdate();
             System.out.println("Ajout de "+nom+" "+ prenom +" "+photo+" avec succès.");
-            preparedStatement.close();
-            } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            con.commit();
+            } catch (Exception ex) {
+                try {
+                    con.rollback();
+                }catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } finally {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
         }
         return null;
     }
@@ -59,13 +82,24 @@ public class ActeurDAO {
     public static Acteur supprActeur(int id) {
         try {
             String sqlInsert = "DELETE FROM acteur WHERE id= ?";
+            con.setAutoCommit(false);
             preparedStatement = con.prepareStatement(sqlInsert);
             preparedStatement.setInt(1,id);
             preparedStatement.executeUpdate();
             System.out.println("La ligne avec l'Id : "+id+" a été supprimé avec succès.");
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            con.commit();
+        } catch (Exception ex) {
+            try {
+                con.rollback();
+            }catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
         return null;
     }
@@ -73,14 +107,25 @@ public class ActeurDAO {
     public static Acteur updateActeur(String colonne, String modif, int id) {
         try {
             String sqlInsert = "UPDATE acteur SET "+colonne+" = ? WHERE acteur.id= ?";
+            con.setAutoCommit(false);
             preparedStatement = con.prepareStatement(sqlInsert);
             preparedStatement.setString(1,modif);
             preparedStatement.setInt(2,id);
             preparedStatement.executeUpdate();
             System.out.println("La colonne "+colonne+" ayant l'id : "+id+"  a été modif avec : "+modif);
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            con.commit();
+        } catch (Exception ex) {
+            try {
+                con.rollback();
+            }catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
         return null;
     }

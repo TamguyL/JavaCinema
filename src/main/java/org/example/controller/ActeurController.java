@@ -2,6 +2,7 @@ package org.example.controller;
 import org.example.model.Acteur;
 import org.example.view.ActeurView;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class ActeurController {
     public void afficheActeur(int id){
         viewActeur.afficheActeur(id, Acteurs);
     }
-    public void ajoutActeur(String nom, String prenom, String photo) {
+    public void ajoutActeur(String nom, String prenom, String photo){
         viewActeur.ajoutActeur(nom, prenom, photo);
     }
 

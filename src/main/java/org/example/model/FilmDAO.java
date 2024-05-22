@@ -25,12 +25,22 @@ public class FilmDAO {
             Statement statement = con.createStatement();
             ResultSet rs= statement.executeQuery(query);
             while (rs.next()) {
-                int id = rs.getInt("id");
+                int id = rs.getInt("id_film");
                 Film film = new Film();
                 film.setId(id);
                 film.setTitre(rs.getString("titre"));
                 film.setDescription(rs.getString("description"));
                 film.setAffiche(rs.getString("affiche"));
+                int idGenre = rs.getInt("id_genre");
+                film.setId_realisateur(rs.getInt("id_realisateur"));
+
+                String genreQuery = "SELECT type FROM genre WHERE id_genre = " + idGenre;
+                ResultSet genreRs = statement.executeQuery(genreQuery);
+                if (genreRs.next()) {
+                    String genre = genreRs.getString("type");
+                    film.setGenre(genre); // Définis le genre dans ton objet Film
+                }
+
                 films.add(film);
             }
         } catch (Exception e) {System.out.println(e);}
@@ -57,7 +67,7 @@ public class FilmDAO {
 
     public static Film supprFilm(int id) {
         try {
-            String sqlInsert = "DELETE FROM film WHERE id= ?";
+            String sqlInsert = "DELETE FROM film WHERE id_film= ?";
             preparedStatement = con.prepareStatement(sqlInsert);
             preparedStatement.setInt(1,id);
             preparedStatement.executeUpdate();
@@ -71,7 +81,7 @@ public class FilmDAO {
 
     public static Film updateFilm(String colonne, String modif, int id) {
         try {
-            String sqlInsert = "UPDATE film SET "+colonne+" = ? WHERE film.id= ?";
+            String sqlInsert = "UPDATE film SET "+colonne+" = ? WHERE film.id_film= ?";
             preparedStatement = con.prepareStatement(sqlInsert);
             preparedStatement.setString(1,modif);
             preparedStatement.setInt(2,id);

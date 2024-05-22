@@ -1,6 +1,8 @@
 package org.example.view;
 import org.example.model.ActeurDAO;
 import org.example.model.Acteur;
+
+import java.sql.SQLException;
 import java.util.List;
 
 public class ActeurView {
@@ -19,7 +21,7 @@ public class ActeurView {
         }
 
         }}
-    public void ajoutActeur(String nom, String prenom, String photo) {
+    public void ajoutActeur(String nom, String prenom, String photo){
         ActeurDAO.ajoutActeur(nom, prenom, photo);
     }
 

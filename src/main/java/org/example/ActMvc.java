@@ -12,10 +12,11 @@ import org.example.controller.FilmController;
 import org.example.model.Film;
 import org.example.model.FilmDAO;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ActMvc {
-    public static void main(String[] args){
+    public static void main(String[] args) {
 //        ActeurController ac = new ActeurController();
 //        ActeurDAO acteurDAO = new ActeurDAO();
 //        acteurDAO.Dbconnect();
@@ -24,11 +25,11 @@ public class ActMvc {
 //            // System.out.println(act.getNom());
 //            ac.addActeur(act);
 //        }
-//        // ac.afficheActeurs();
+//        ac.afficheActeurs();
 //        // ac.afficheActeur(1);
 //        // ac.ajoutActeur("Toto", "Tati","photototi");
-//        // ac.supprActeur(6);
-//        ac.updateActeur("prenom","Jean Paul" ,1);
+//        // ac.supprActeur(7);
+//        // ac.updateActeur("prenom","Jean Paul" ,1);
 
 
 //        RealisateurController rc = new RealisateurController();
@@ -52,11 +53,10 @@ public class ActMvc {
         for(Film film : films) {
             fc.addFilm(film);
         }
-        // fc.afficheFilms();
-        // fc.afficheFilm(21);
-        // fc.ajoutFilm("Toté", "Tati","photototi");
-        // fc.supprFilm(20);
-        fc.updateFilm("prenom","Alain" ,19);
-        //coucoucou
+         //fc.afficheFilms();
+         fc.afficheFilm(1);
+         //fc.ajoutFilm("Toté", "Tati","photototi");
+         //fc.supprFilm(20);
+         //fc.updateFilm("prenom","Alain" ,19);
     }
 }
