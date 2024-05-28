@@ -1,8 +1,15 @@
 package org.example.model;
-import java.sql.*;
-import java.util.List;
+import javax.persistence.*;
 
+
+@Entity
+@Table(name = "acteur")
+
+// Modele de MVC
 public class Acteur {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private int id;
     private String nom;
@@ -10,15 +17,23 @@ public class Acteur {
     private String photo;
 
 
-    //Constructeur
-    public Acteur() {
+    public Acteur(int id, String nom, String photo, String prenom) {
         this.id = id;
         this.nom = nom;
-        this.prenom = prenom;
         this.photo = photo;
+        this.prenom = prenom;
     }
 
-    //    Getter
+    public Acteur() {
+
+    }
+
+    public Acteur(String nom, String prenom, String photo) {
+        this.nom = nom;
+        this.photo = photo;
+        this.prenom = prenom;
+    }
+
     public int getId() {
         return id;
     }
@@ -31,8 +46,6 @@ public class Acteur {
     public String getPhoto() {
         return photo;
     }
-
-    //Setter
 
     public void setId(int id) {
         this.id = id;

@@ -1,96 +1,54 @@
 package org.example.model;
 
-import java.sql.*;
-import java.util.ArrayList;
+import org.example.HibernateUtil;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import java.util.List;
 
 public class FilmDAO {
-    static Connection con = null;
-    static PreparedStatement preparedStatement= null;
 
-    public static void Dbconnect() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            // connection to mysql
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mcdcinema", "root", "");
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
+    Session session=null ;
+    Transaction trans;
+
+//    SELECT acteur.nom,acteur.prenom,film.titre,film.description,genre.type,realisateur.nom,realisateur.prenom
+//    FROM joue,acteur,film,genre,realisateur
+//    WHERE joue.Id_acteur = acteur.id
+//    AND joue.Id_film = film.id
+//    AND genre.id = film.id_genre
+//    AND realisateur.id = film.id_realisateur;
+
+    public Film getFilm(int id){
+        System.out.println("tu arrives a getfilm de filmDAo");
+        session = HibernateUtil.getSessionFactory().openSession();
+        return (session.get(Film.class,id));
     }
 
     public static List<Film> getFilms() {
-        List<Film> films = new ArrayList<>();
-        String query = "SELECT * FROM film";
-        try {
-            Statement statement = con.createStatement();
-            ResultSet rs= statement.executeQuery(query);
-            while (rs.next()) {
-                int id = rs.getInt("id_film");
-                Film film = new Film();
-                film.setId(id);
-                film.setTitre(rs.getString("titre"));
-                film.setDescription(rs.getString("description"));
-                film.setAffiche(rs.getString("affiche"));
-                int idGenre = rs.getInt("id_genre");
-                film.setId_realisateur(rs.getInt("id_realisateur"));
-
-                String genreQuery = "SELECT type FROM genre WHERE id_genre = " + idGenre;
-                ResultSet genreRs = statement.executeQuery(genreQuery);
-                if (genreRs.next()) {
-                    String genre = genreRs.getString("type");
-                    film.setGenre(genre); // Définis le genre dans ton objet Film
-                }
-
-                films.add(film);
-            }
-        } catch (Exception e) {System.out.println(e);}
-        return films;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        return (session.createQuery("FROM Film", Film.class).getResultList());
     }
 
-
-
-    public static Film ajoutFilm(String titre, String description, String affiche) {
-        try {
-            String sqlInsert = "INSERT INTO film (titre,affiche,description) VALUES (?,?,?)";
-            preparedStatement = con.prepareStatement(sqlInsert);
-            preparedStatement.setString(1,titre);
-            preparedStatement.setString(2,affiche);
-            preparedStatement.setString(3,description);
-            preparedStatement.executeUpdate();
-            System.out.println("Ajout de "+titre+" "+ description +" "+affiche+" avec succès.");
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-        return null;
+    public void ajoutFilm(Film film) {
+        session = HibernateUtil.getSessionFactory().openSession();
+        trans = session.beginTransaction();
+        session.persist(film);
+        trans.commit();
     }
 
-    public static Film supprFilm(int id) {
-        try {
-            String sqlInsert = "DELETE FROM film WHERE id_film= ?";
-            preparedStatement = con.prepareStatement(sqlInsert);
-            preparedStatement.setInt(1,id);
-            preparedStatement.executeUpdate();
-            System.out.println("La ligne avec l'Id : "+id+" a été supprimé avec succès.");
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-        return null;
+    public void supprFilm(int id) {
+        session = HibernateUtil.getSessionFactory().openSession();
+        Film film = new Film();
+        trans = session.beginTransaction();
+        film.setId(id);
+        session.delete(film);
+        trans.commit();
     }
 
-    public static Film updateFilm(String colonne, String modif, int id) {
-        try {
-            String sqlInsert = "UPDATE film SET "+colonne+" = ? WHERE film.id_film= ?";
-            preparedStatement = con.prepareStatement(sqlInsert);
-            preparedStatement.setString(1,modif);
-            preparedStatement.setInt(2,id);
-            preparedStatement.executeUpdate();
-            System.out.println("La colonne "+colonne+" ayant l'id : "+id+"  a été modif avec : "+modif);
-            preparedStatement.close();
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-        return null;
+    public void updateFilm(Film film) {
+        session = HibernateUtil.getSessionFactory().openSession();
+        trans = session.beginTransaction();
+        session.update(film);
+        trans.commit();
     }
 }
