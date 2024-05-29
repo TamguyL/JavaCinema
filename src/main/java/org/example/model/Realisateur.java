@@ -16,7 +16,7 @@ public class Realisateur {
     private String photo;
 
     @ManyToMany(mappedBy = "realisateurs")
-    List<Film> films = new ArrayList<Film>();
+    private List<Film> films;
 
     public Realisateur(int id, String nom, String prenom, String photo) {
         this.id = id;

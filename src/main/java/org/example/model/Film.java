@@ -19,13 +19,15 @@ public class Film {
     @ManyToOne
     @JoinColumn(name = "id_genre")
     private Genre genre;
+
+
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "realise",
             joinColumns = { @JoinColumn(name = "id_film") },
             inverseJoinColumns = { @JoinColumn(name = "id_realisateur") }
     )
-    private List<Realisateur> realisateurs = new ArrayList<Realisateur>();
+    private List<Realisateur> realisateurs;
 
     public Film(int id, String description, String affiche, String titre, Genre genre, List<Realisateur> realisateurs) {
         this.realisateurs = realisateurs;

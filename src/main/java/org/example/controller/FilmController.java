@@ -50,8 +50,12 @@ public class FilmController {
 
     public void concatenation(){
         List<Film> films = FilmDAO.getFilms();
-        for (Film f : films){System.out.println(f.getTitre()+":"+f.getGenre().getGenre());
-            System.out.println(f.getRealisateurs());
+        for (Film f : films){
+            System.out.println(f.getTitre()+":"+f.getGenre().getGenre());
+            for (Realisateur r :f.getRealisateurs()){
+                System.out.println(r.getNom()+" "+r.getPrenom());
+            }
+
         }
     }
 }
